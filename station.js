@@ -37,10 +37,10 @@ function tex(path, rx = 1, ry = 1) {
   t.repeat.set(rx, ry);
   return t;
 }
-const planetTex   = tex('assets/textures/planet-snowy.jpg');
-const panelTex    = tex('assets/textures/panel-metal.jpg', 2, 2);
-const wallTex     = tex('assets/textures/wall-metal-pink.jpg');
-const platformTex = tex('assets/textures/platform-metal-purple.jpg');
+const planetTex   = tex('planet-snowy.jpg');
+const panelTex    = tex('panel-metal.jpg', 2, 2);
+const wallTex     = tex('wall-metal-pink.jpg');
+const platformTex = tex('platform-metal-purple.jpg');
 
 function makeEnvCube() {
   const faces = [];
