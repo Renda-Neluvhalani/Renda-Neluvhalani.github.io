@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renda Neluvhalani</title>
+<meta name="description" content="Renda Neluvhalani, final-year BSc Computing student at Unisa. Projects in data analysis, Python and 3D graphics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fog:#ddd3c9;      /* Warm Fog */
+    --berry:#ecc4c3;    /* Berry Good */
+    --blossom:#b97d7b;  /* Usu Koubai Blossom */
+    --meadow:#928e5e;   /* Meadow Mauve */
+    --soldier:#575527;  /* Soldier Green */
+    --paper:#faf6f2;
+    --ink:#3b3a1c;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.65 "Instrument Sans",system-ui,sans-serif}
+  a{color:inherit;text-underline-offset:3px}
+  :focus-visible{outline:2px solid var(--blossom);outline-offset:3px}
+  .serif{font-family:"Instrument Serif",Georgia,serif;font-weight:400}
+  em{font-family:"Instrument Serif",Georgia,serif;font-style:italic}
+  h1,h2,h3{font-family:"Instrument Serif",Georgia,serif;font-weight:400;margin:0;line-height:1.02;letter-spacing:-.01em}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  @media(max-width:600px){.wrap{padding:0 20px}}
+  .tiny{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+  .paren{font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--soldier)}
+  .paren:before{content:"("} .paren:after{content:")"}
+  .note-todo{font-size:13px;background:#fff;border:1px dashed var(--blossom);color:var(--blossom);padding:2px 8px;border-radius:4px}
+  .doodle{stroke:var(--soldier);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+  .btn{display:inline-block;font:500 14px "Instrument Sans";padding:10px 26px;border-radius:999px;text-decoration:none;border:1.5px solid var(--soldier);color:var(--soldier);transition:background .2s,color .2s}
+  .btn:hover{background:var(--soldier);color:var(--paper)}
+  .btn.fill{background:var(--soldier);color:var(--paper)}
+  .btn.fill:hover{background:var(--ink)}
+
+  /* stamp edge */
+  .stamp{background:#fff;padding:22px;
+    -webkit-mask:linear-gradient(#000 0 0) center/calc(100% - 16px) calc(100% - 16px) no-repeat,radial-gradient(circle,#0000 5px,#000 5.5px) -8px -8px/16px 16px;
+            mask:linear-gradient(#000 0 0) center/calc(100% - 16px) calc(100% - 16px) no-repeat,radial-gradient(circle,#0000 5px,#000 5.5px) -8px -8px/16px 16px}
+
+  /* nav */
+  header{background:var(--berry);border-bottom:1px solid rgba(87,85,39,.25)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{font-family:"Instrument Serif";font-style:italic;font-size:22px;line-height:.9;text-decoration:none;color:var(--soldier)}
+  header nav{display:flex;gap:26px}
+  header nav a{text-decoration:none;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--soldier)}
+  header nav a:hover{text-decoration:underline}
+  @media(max-width:760px){header nav a:not(.keep){display:none}}
+
+  /* hero */
+  .hero{padding:80px 0 90px}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  @media(max-width:880px){.hero .wrap{grid-template-columns:1fr}.hero{padding:50px 0 70px}}
+  .hero h1{font-size:clamp(46px,6.2vw,76px);margin:14px 0 18px}
+  .hero p{max-width:40ch;margin:0 0 30px;font-size:16.5px}
+  .hero .btns{display:flex;gap:12px;flex-wrap:wrap}
+
+  .collage{position:relative;height:500px}
+  .collage{height:560px}
+  @media(max-width:880px){.collage{height:560px;margin-top:20px}}
+  @media(max-width:420px){.collage{height:530px}}
+  .envelope{position:absolute;left:0;top:30px;width:190px;transform:rotate(-12deg);filter:drop-shadow(0 8px 14px rgba(87,85,39,.18))}
+  .polaroid{position:absolute;right:10px;top:10px;width:min(400px,86%);background:#fff;padding:14px 14px 18px;transform:rotate(4deg);box-shadow:0 18px 40px -16px rgba(87,85,39,.45)}
+  .polaroid .frame{position:relative;aspect-ratio:1/1;background:#110515;overflow:hidden}
+  .polaroid .frame .fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .polaroid .frame.live .fallback{display:none}
+  .polaroid .frame:focus{outline:none}
+  .polaroid .frame.focused{box-shadow:inset 0 0 0 3px var(--berry)}
+  .polaroid .hint{margin:6px 0 0;text-align:center;font-size:12px;color:var(--meadow)}
+  .polaroid canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;cursor:grab;touch-action:none}
+  .polaroid canvas:active{cursor:grabbing}
+  .polaroid .cap{font-family:"Instrument Serif";font-style:italic;font-size:21px;text-align:center;margin-top:10px;color:var(--soldier)}
+  .shade{display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .shade button{font:500 12px "Instrument Sans";border:1px solid var(--meadow);background:#fff;color:var(--soldier);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .shade button[aria-pressed="true"]{background:var(--soldier);color:#fff;border-color:var(--soldier)}
+  .clip{position:absolute;top:-26px;left:30%;width:30px;transform:rotate(8deg)}
+  .hero-stamp{position:absolute;right:-12px;top:-30px;width:118px;transform:rotate(-7deg);padding:12px;text-align:center;background:var(--fog)}
+  .hero-stamp .in{border:1.5px solid var(--soldier);padding:6px 4px 4px;font-family:"Instrument Serif";color:var(--soldier)}
+  .hero-stamp .big{font-size:30px;line-height:1}
+  .hero-stamp svg{width:46px;height:46px;display:block;margin:2px auto}
+  .hero-stamp .yr{font-size:22px;text-align:right;line-height:1}
+
+  /* ribbon */
+  .ribbon{background:var(--berry);border-block:1px solid rgba(87,85,39,.2);overflow:hidden;padding:10px 0}
+  .ribbon .track{display:flex;gap:28px;width:max-content;animation:roll 38s linear infinite;font-family:"Instrument Serif";font-style:italic;font-size:19px;color:var(--soldier);align-items:center}
+  .ribbon svg{width:16px;height:16px}
+  @keyframes roll{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.ribbon .track{animation:none}}
+
+  /* at a glance */
+  .glance{padding:46px 0 0;background:#f6f0ea}
+  .glance .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:#fff;border:1px solid var(--fog);border-radius:14px;padding:0}
+  .g{padding:22px 24px;border-left:1px solid var(--fog);display:flex;flex-direction:column;gap:2px}
+  .g:first-child{border-left:0}
+  .g b{font-family:"Instrument Serif";font-weight:400;font-size:25px;line-height:1.1;margin-top:4px}
+  .g span:last-child{font-size:13.5px;color:var(--meadow)}
+  @media(max-width:880px){.glance .wrap{grid-template-columns:1fr 1fr;margin:0 20px}.g:nth-child(3){border-left:0}.g:nth-child(n+3){border-top:1px solid var(--fog)}}
+  @media(max-width:480px){.glance .wrap{grid-template-columns:1fr}.g{border-left:0!important}.g+.g{border-top:1px solid var(--fog)}}
+
+  /* projects folders */
+  .projects{padding:90px 0 110px;background:#f6f0ea}
+  .center{text-align:center}
+  .sec-title{font-size:clamp(42px,5.2vw,62px)}
+  .folders{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:70px}
+  @media(max-width:900px){.folders{grid-template-columns:1fr;max-width:440px;margin-inline:auto;gap:70px}}
+  .folder{position:relative;text-decoration:none;color:var(--ink);display:block;padding-top:96px;transition:transform .25s}
+  .folder:hover{transform:translateY(-6px)}
+  .folder .pic{position:absolute;left:14%;right:8%;top:0;height:150px;transform:rotate(-3deg);background:#fff;padding:7px;box-shadow:0 8px 20px -10px rgba(87,85,39,.4);z-index:0}
+  .folder:nth-child(2) .pic{transform:rotate(3deg);left:10%;right:12%}
+  .folder .pic > *{width:100%;height:100%;display:block}
+  .folder .body{position:relative;z-index:1;border-radius:0 12px 12px 12px;padding:22px 22px 26px;min-height:170px}
+  .folder .body:before{content:"";position:absolute;left:0;top:-22px;width:46%;height:24px;background:inherit;border-radius:10px 14px 0 0}
+  .folder .tab{position:absolute;top:-17px;left:14px;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+  .folder h3{font-size:30px;margin-bottom:6px}
+  .folder p{margin:0;font-size:14.5px;max-width:30ch}
+  .folder .tools{margin-top:12px!important;font-size:12.5px!important;font-weight:600;color:var(--soldier);max-width:22ch!important}
+  .folder .ic{position:absolute;right:14px;bottom:12px;width:52px;height:52px}
+  .f1 .body{background:var(--fog)} .f2 .body{background:var(--berry)} .f3 .body{background:#c9c6a3}
+
+  /* football band */
+  .football{background:var(--soldier);color:var(--paper);padding:110px 0}
+  .football .paren{color:var(--berry)}
+  .football h2{font-size:clamp(42px,5.6vw,70px);max-width:15ch;margin:12px 0 0}
+  .two{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;margin-top:50px;align-items:start}
+  @media(max-width:880px){.two{grid-template-columns:1fr;gap:40px}}
+  .football p{margin:0 0 16px;color:#efe9df}
+  .football .lead{font-family:"Instrument Serif";font-size:24px;line-height:1.35;color:var(--paper)}
+  .football code{font-family:"IBM Plex Mono";font-size:.85em;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px}
+  .football .result{margin-top:6px}
+
+  .ticket{color:var(--ink);background:var(--paper);transform:rotate(1.5deg)}
+  .football .ticket p,.football .sticky p{color:var(--ink)}
+  .football .ticket .paren{color:var(--blossom)}
+  .ticket h3{font-size:30px}
+  .ticket .how{font-size:14px;margin:6px 0 18px}
+  .odds-in{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+  .odds-in label{font-size:12px;letter-spacing:.03em;text-transform:uppercase;display:flex;flex-direction:column;gap:5px;color:var(--soldier)}
+  .odds-in input{font:400 30px "Instrument Serif";color:var(--soldier);background:var(--fog);border:0;border-bottom:2px solid var(--soldier);padding:4px 8px;width:100%;border-radius:4px 4px 0 0}
+  .row{display:grid;grid-template-columns:52px 1fr 104px;gap:10px;align-items:center;font-size:13.5px;margin:8px 0}
+  .bar{height:12px;background:var(--fog);border-radius:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--blossom);border-radius:6px;transition:width .35s}
+  .row .v{text-align:right;font-size:13px;color:var(--soldier)}
+  .margin{margin-top:14px;padding-top:12px;border-top:1px dashed var(--meadow);font-size:14px}
+  .margin b{font-family:"Instrument Serif";font-size:24px;font-weight:400;color:var(--blossom)}
+
+  .notes-title{font-family:"Instrument Serif";font-size:32px;text-align:center;margin:90px 0 30px}
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:880px){.notes{grid-template-columns:1fr;max-width:420px;margin:0 auto}}
+  .sticky{color:var(--ink);padding:26px 22px 24px;min-height:200px;text-align:center;box-shadow:0 10px 22px -12px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;gap:10px}
+  .sticky:nth-child(1){background:var(--fog);transform:rotate(-1.2deg)}
+  .sticky:nth-child(2){background:var(--berry);transform:rotate(.8deg)}
+  .sticky:nth-child(3){background:#e9e3c4;transform:rotate(-.6deg)}
+  .sticky svg{width:42px;height:42px}
+  .sticky p{margin:0;font-family:"Instrument Serif";font-size:26px;line-height:1.1}
+  .sticky span{font-size:14px}
+  details{margin-top:26px}
+  summary{cursor:pointer;font-weight:600;color:var(--berry)}
+  pre{margin:12px 0 0;background:rgba(0,0,0,.22);color:#efe9df;border-radius:8px;padding:16px 18px;overflow-x:auto;font:12.5px/1.65 "IBM Plex Mono",monospace}
+  .links{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:24px;font-weight:600}
+  .football .links a{color:var(--berry)}
+
+  .result-box{display:flex;gap:18px;align-items:center;background:var(--paper);color:var(--ink);border-radius:14px;padding:18px 22px;margin:22px 0 4px;transform:rotate(-.6deg)}
+  .result-box b{font-family:"Instrument Serif";font-weight:400;font-size:64px;line-height:1;color:var(--blossom);flex:none}
+  .result-box span{font-size:15px;line-height:1.5}
+  @media(max-width:520px){.result-box{flex-direction:column;align-items:flex-start;gap:6px}}
+
+  .taped{position:relative;background:#fff;padding:12px 12px 14px;box-shadow:0 14px 30px -18px rgba(0,0,0,.55);transform:rotate(-1.5deg)}
+  .taped.tilt-r{transform:rotate(1.5deg)}
+  .taped img,.taped video{display:block;width:100%}
+  .taped figcaption{font-family:"Instrument Serif";font-style:italic;font-size:19px;text-align:center;color:var(--soldier);margin-top:8px}
+  .tape{position:absolute;top:-13px;left:50%;width:110px;height:26px;margin-left:-55px;background:rgba(236,196,195,.85);transform:rotate(-3deg);z-index:1}
+  .scores{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;margin-top:80px;align-items:center}
+  @media(max-width:880px){.scores{grid-template-columns:1fr;gap:40px}}
+  .football table{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+  .football th{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--meadow);text-align:left;padding:6px 6px;border-bottom:1.5px solid var(--soldier)}
+  .football td{padding:9px 6px;border-bottom:1px dashed var(--fog)}
+  .football th:not(:first-child),.football td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+  .football tr.best td{color:var(--blossom);font-weight:600}
+  .football .ticket .small{font-size:13px;margin:10px 0 0;color:var(--meadow)}
+  .notes.four{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:1000px){.notes.four{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.notes.four{grid-template-columns:1fr}}
+  .sticky:nth-child(4){background:#e9d6d4;transform:rotate(1.2deg)}
+  .sub-h{font-family:"Instrument Serif";font-size:30px;margin:0 0 12px}
+  .sub-h + .plain + .sub-h,.plain + .sub-h{margin-top:34px}
+  .plain{margin:0;padding:0;list-style:none}
+  .plain li{padding:10px 0 10px 24px;border-top:1px solid rgba(250,246,242,.2);position:relative;font-size:15.5px;color:#efe9df}
+  .plain li:before{content:"";position:absolute;left:4px;top:19px;width:8px;height:8px;border-radius:50%;background:var(--berry)}
+  .plain b{color:var(--paper)}
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;margin-top:26px;font-size:14.5px}
+  .keys .k{display:flex;gap:4px}
+  kbd{font:600 12px "Instrument Sans";min-width:26px;padding:3px 7px;text-align:center;border:1.5px solid var(--soldier);border-bottom-width:3px;border-radius:5px;background:#fff;color:var(--soldier)}
+  .ai{margin-top:20px!important;font-size:14.5px;color:var(--meadow)}
+  .station .facts .fact span{font-size:14px}
+
+  /* station */
+  .station{padding:110px 0}
+  .station h2{font-size:clamp(42px,5.6vw,70px);max-width:14ch;margin-top:12px}
+  .station .lead{font-family:"Instrument Serif";font-size:24px;line-height:1.35}
+  .station p{margin:0 0 16px}
+  .facts{display:grid;gap:16px}
+  .fact{background:#fff;border:1px solid var(--fog);border-radius:12px;padding:16px 18px 16px 66px;position:relative}
+  .fact svg{position:absolute;left:16px;top:16px;width:36px;height:36px}
+  .fact b{display:block;font-family:"Instrument Serif";font-weight:400;font-size:22px;line-height:1.1;margin-bottom:2px}
+  .fact span{font-size:14.5px}
+
+  /* labasadi stripes */
+  .labasadi{padding:110px 0;background:repeating-linear-gradient(90deg,var(--berry) 0 22px,#f6e3e2 22px 44px)}
+  .lcard{max-width:640px;margin:0 auto;text-align:center;padding:56px 50px 50px;position:relative}
+  @media(max-width:600px){.lcard{padding:44px 26px}}
+  .lcard h2{font-size:clamp(36px,4.6vw,54px);margin:10px 0 18px}
+  .lcard p{margin:0 0 14px}
+  .lcard .btn{margin-top:12px}
+  .lcard .shotph{margin:22px auto 6px;max-width:360px;aspect-ratio:16/10;border:1.5px dashed var(--meadow);border-radius:6px;display:grid;place-items:center}
+  .lstamp{position:absolute;right:-10px;bottom:-26px;width:96px;transform:rotate(8deg);background:var(--fog);padding:10px}
+  .lstamp .in{border:1.5px solid var(--soldier);padding:6px 4px;text-align:center}
+  .lstamp svg{width:50px;height:50px}
+
+  /* about */
+  .about{padding:110px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:50px 70px;margin-top:60px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;gap:44px}}
+  .about h3{font-size:32px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--fog)}
+  .entry{margin-bottom:22px}
+  .entry .t{font-weight:600;font-size:17px}
+  .entry .m{font-size:13px;color:var(--meadow);margin:1px 0 5px;text-transform:uppercase;letter-spacing:.03em}
+  .entry p{margin:0;font-size:15.5px}
+  .certs{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+  .cert{width:200px;padding:16px}
+  .cert:nth-child(1){background:var(--berry);transform:rotate(-2deg)}
+  .cert:nth-child(2){background:#d9d6b5;transform:rotate(2deg)}
+  .cert .in{border:1.5px solid var(--soldier);padding:12px;min-height:190px;display:flex;flex-direction:column}
+  .cert .code{font-family:"Instrument Serif";font-size:44px;line-height:1;color:var(--soldier)}
+  .cert .t{font-family:"Instrument Serif";font-size:19px;line-height:1.15;margin:6px 0 4px}
+  .cert .m{font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;margin-top:auto}
+  .cert a{font-size:12.5px}
+  .cert .note-todo{display:inline-block;margin-top:4px}
+  .skills p{margin:0 0 10px;font-size:15.5px}
+  .skills b{font-weight:600}
+
+  /* contact */
+  .contact{background:var(--blossom);color:#fff;padding:110px 0 46px;text-align:center}
+  .contact h2{font-size:clamp(52px,8vw,104px)}
+  .contact p{max-width:46ch;margin:18px auto 28px;color:#fbeeee}
+  .mail{font-family:"Instrument Serif";font-style:italic;font-size:clamp(26px,4vw,42px);color:#fff;text-decoration:underline;text-decoration-thickness:1px;word-break:break-all}
+  .contact .links{justify-content:center;margin-top:28px}
+  .contact .links a{color:#fff}
+  .contact .btn.cv{border-color:#fff;color:#fff;text-decoration:none}
+  .contact .btn.cv:hover{background:#fff;color:var(--blossom)}
+  .contact .env{width:110px;margin:0 auto 18px;display:block}
+  .foot{margin-top:80px;font-size:13px;color:#fbe1e0}
+</style>
+</head>
+<body>
+
+<!-- reusable doodles -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="d-glass" viewBox="0 0 48 48"><circle cx="20" cy="20" r="12"/><path d="M29 29l12 12M13 17a8 8 0 0 1 6-5"/></symbol>
+    <symbol id="d-rocket" viewBox="0 0 48 48"><path d="M24 5c7 6 9 15 7 25H17c-2-10 0-19 7-25z"/><circle cx="24" cy="18" r="3.5"/><path d="M17 30l-6 7 7-1M31 30l6 7-7-1M21 34c0 4 1.5 7 3 9 1.5-2 3-5 3-9"/></symbol>
+    <symbol id="d-ball" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 16l7 5-3 8h-8l-3-8z M24 16V8 M31 21l7-3 M28 29l4 7 M20 29l-4 7 M17 21l-7-3"/></symbol>
+    <symbol id="d-bow" viewBox="0 0 48 48"><path d="M24 20c-4-6-14-9-15-3s9 7 15 3zM24 20c4-6 14-9 15-3s-9 7-15 3zM22 21l-6 20M26 21l7 19M22 22c1 2 3 2 4 0"/></symbol>
+    <symbol id="d-sparkle" viewBox="0 0 24 24"><path d="M12 2c1 5 3 8 10 10-7 2-9 5-10 10-1-5-3-8-10-10 7-2 9-5 10-10z"/></symbol>
+    <symbol id="d-env" viewBox="0 0 120 80"><rect x="4" y="6" width="112" height="68" rx="4"/><path d="M4 10l56 38 56-38"/></symbol>
+    <symbol id="d-web" viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="28" rx="3"/><path d="M6 16h36M11 12.5h.5M15 12.5h.5M13 23h22M13 29h14M18 41h12M24 37v4"/></symbol>
+    <symbol id="d-cake" viewBox="0 0 48 48"><path d="M10 40h28V26H10zM10 32c4 3 7 3 10 0s7-3 10 0 6 3 8 0M14 26v-5h20v5M24 21v-6M24 15c-2-2-1-5 0-6 1 1 2 4 0 6"/></symbol>
+    <symbol id="d-planet" viewBox="0 0 48 48"><circle cx="24" cy="24" r="11"/><path d="M8 30c-4 4 1 6 10 4 7-2 16-6 22-11 6-5 4-8-3-6"/></symbol>
+    <symbol id="d-chart" viewBox="0 0 48 48"><path d="M8 40h34M12 34V24M20 34V16M28 34V22M36 34V10"/></symbol>
+    <symbol id="d-clip" viewBox="0 0 30 60"><path d="M10 50V12a5 5 0 0 1 10 0v34a8 8 0 0 1-16 0V16"/></symbol>
+    <symbol id="d-key" viewBox="0 0 48 48"><circle cx="16" cy="16" r="8"/><path d="M22 22l18 18M32 32l4-4M36 36l4-4"/></symbol>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">Renda<br>Neluvhalani</a>
+    <nav>
+      <a href="#projects">Projects</a>
+      <a href="#football">Football model</a>
+      <a href="#station">Space station</a>
+      <a href="#about">About</a>
+      <a class="keep" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="paren">Aspiring data analyst, BSc Computing at Unisa</span>
+      <h1>Finding the <em>story</em> hidden in <em>the data</em>.</h1>
+      <p>I'm Renda. I'm finishing a BSc in Computing at Unisa, and I like building things that answer a real question, like whether a simple model can price football as well as a bookmaker. That's my space station in the photo. It's live, so give it a spin.</p>
+      <div class="btns">
+        <a class="btn fill" href="#projects">See my projects</a>
+        <a class="btn" href="Renda_Neluvhalani_CV.pdf" target="_blank" rel="noopener">Download my CV</a>
+      </div>
+    </div>
+    <div class="collage">
+      <svg class="envelope" viewBox="0 0 200 130" aria-hidden="true">
+        <rect x="4" y="4" width="192" height="122" rx="5" fill="#fff" stroke="#ddd3c9" stroke-width="2"/>
+        <path d="M4 8l96 62 96-62" fill="none" stroke="#ddd3c9" stroke-width="2"/>
+        <circle cx="100" cy="70" r="17" fill="#b97d7b"/>
+        <circle cx="100" cy="70" r="11" fill="none" stroke="#ecc4c3" stroke-width="1.5"/>
+        <text x="100" y="75" text-anchor="middle" font-family="Instrument Serif,serif" font-style="italic" font-size="15" fill="#faf6f2">R</text>
+      </svg>
+      <figure class="polaroid" style="margin:0">
+        <svg class="clip doodle" viewBox="0 0 30 60" aria-hidden="true"><use href="#d-clip"/></svg>
+        <div class="frame" id="scene"><img class="fallback" src="assets/station.jpg" alt="Screenshot of Renda's Planet Masase space station: pink and purple modules around a central hub, with an icy planet behind"></div>
+        <figcaption class="cap">Planet Masase, my real project, live</figcaption>
+        <div class="shade" role="group" aria-label="Space station controls">
+          <button type="button" data-act="light">Day</button>
+          <button type="button" data-act="shade">Shading: Default</button>
+          <button type="button" data-act="view">Docking view</button>
+          <button type="button" data-act="pause" aria-pressed="false">Pause</button>
+        </div>
+        <p class="hint">Drag to turn it. Click it to zoom and fly with W A S D.</p>
+      </figure>
+      <div class="hero-stamp stamp" aria-hidden="true">
+        <div class="in"><div class="big">RN</div><svg class="doodle" viewBox="0 0 48 48"><use href="#d-chart"/></svg><div class="yr">26</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ribbon" aria-hidden="true">
+  <div class="track" id="ribbon">
+    <span>SQL</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Python</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Power BI</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Microsoft Azure</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Excel</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Data visualisation</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Statistics</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Streamlit</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+    <span>Business analysis</span><svg class="doodle"><use href="#d-sparkle"/></svg>
+  </div>
+</div>
+
+<section class="glance" aria-label="At a glance">
+  <div class="wrap">
+    <div class="g"><span class="paren">Studying</span><b>BSc Computing</b><span>Unisa, graduating 2026</span></div>
+    <div class="g"><span class="paren">Results</span><b>10 distinctions</b><span>GPA 68.15</span></div>
+    <div class="g"><span class="paren">Certified</span><b>Azure Data Fundamentals</b><span>Microsoft DP-900</span></div>
+    <div class="g"><span class="paren">Looking for</span><b>Graduate data roles</b><span>From 2027, Centurion, Gauteng</span></div>
+  </div>
+</section>
+
+<section class="projects" id="projects">
+  <div class="wrap">
+    <h2 class="sec-title center">My <em>Projects</em></h2>
+    <div class="folders">
+      <a class="folder f1" href="#football">
+        <div class="pic"><img src="assets/calibration.png" alt="" style="object-fit:cover;object-position:50% 40%"></div>
+        <div class="body"><span class="tab">(data science)</span>
+          <h3>Football odds model</h3><p>Pricing Premier League matches and testing the models against Bet365.</p><p class="tools">Python, scikit-learn, statsmodels, Streamlit</p>
+          <svg class="ic doodle" viewBox="0 0 48 48"><use href="#d-ball"/></svg></div>
+      </a>
+      <a class="folder f2" href="#station">
+        <div class="pic"><img src="assets/station.jpg" alt="" style="object-fit:cover;object-position:45% 50%"></div>
+        <div class="body"><span class="tab">(computer graphics)</span>
+          <h3>Planet Masase</h3><p>An interactive 3D space station orbiting an icy planet.</p><p class="tools">JavaScript, Three.js, WebGL, Vite</p>
+          <svg class="ic doodle" viewBox="0 0 48 48"><use href="#d-rocket"/></svg></div>
+      </a>
+      <a class="folder f3" href="#labasadi">
+        <div class="pic"><svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="300" height="150" fill="#faf6f2"/><rect width="300" height="18" fill="#ddd3c9"/><circle cx="12" cy="9" r="3" fill="#b97d7b"/><circle cx="22" cy="9" r="3" fill="#928e5e"/><circle cx="32" cy="9" r="3" fill="#575527"/>
+          <rect x="20" y="34" width="260" height="62" fill="#b97d7b"/><text x="150" y="70" text-anchor="middle" font-family="Instrument Serif,serif" font-size="22" fill="#faf6f2">Empower Our Society</text>
+          <rect x="20" y="108" width="120" height="7" rx="3" fill="#ddd3c9"/><rect x="20" y="122" width="80" height="7" rx="3" fill="#ddd3c9"/><rect x="160" y="108" width="120" height="7" rx="3" fill="#ddd3c9"/><rect x="160" y="122" width="90" height="7" rx="3" fill="#ddd3c9"/></svg></div>
+        <div class="body"><span class="tab">(volunteer web work)</span>
+          <h3>La Basadi website</h3><p>Designing, building and running a community organisation's website.</p><p class="tools">Wix, web design, content management</p>
+          <svg class="ic doodle" viewBox="0 0 48 48"><use href="#d-web"/></svg></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="football" id="football">
+  <div class="wrap">
+    <span class="paren">Data science, Python, 2026</span>
+    <h2>Can a simple model <em>beat</em> the bookmaker?</h2>
+    <div class="two">
+      <div>
+        <p class="lead">I built two models on five Premier League seasons, from 2021/22 to 2025/26, and tested them against Bet365's odds on the 2025/26 season.</p>
+        <p>The models were trained on the first four seasons (1,900 matches in all) and never saw the 342 test matches. The first was a logistic regression on each team's last five matches of form. The second was a Poisson model of goals scored, which rates each team's attack and defence. Before comparing, I removed Bet365's margin, 5.5% on average, so its odds became fair probabilities. I also measured everything against a baseline that always predicts the average home, draw and away rates.</p>
+        <div class="result-box"><b>37%</b><span>of the gap between the baseline and the bookmaker closed by my Poisson model on log loss. The bookmaker was still the best forecaster.</span></div>
+        <div class="links"><a href="https://github.com/Renda-Neluvhalani/football-odds-model" target="_blank" rel="noopener">See the code on GitHub</a></div>
+      </div>
+      <figure class="taped" style="margin:0">
+        <span class="tape" aria-hidden="true"></span>
+        <img src="assets/calibration.png" alt="Calibration chart for home wins in 2025/26, comparing logistic regression, Poisson and bookmaker probabilities against perfect calibration">
+        <figcaption>calibration for home wins, 2025/26</figcaption>
+      </figure>
+    </div>
+
+    <div class="scores">
+      <div class="ticket stamp">
+        <span class="paren">the scores</span>
+        <h3>Test season <em>results</em></h3>
+        <table>
+          <thead><tr><th>Model</th><th>Log loss</th><th>Brier</th></tr></thead>
+          <tbody>
+            <tr><td>Baseline (average rates)</td><td>1.0837</td><td>0.6560</td></tr>
+            <tr><td>Logistic regression (form)</td><td>1.0902</td><td>0.6599</td></tr>
+            <tr><td>Poisson goals model</td><td>1.0542</td><td>0.6358</td></tr>
+            <tr class="best"><td>Bookmaker (margin removed)</td><td>1.0041</td><td>0.6010</td></tr>
+          </tbody>
+        </table>
+        <p class="small">Lower is better for both scores.</p>
+      </div>
+      <figure class="taped tilt-r" style="margin:0">
+        <span class="tape" aria-hidden="true"></span>
+        <img src="assets/backtest.png" alt="Line chart of cumulative profit over 2025/26 at one unit per bet, swinging between about minus 16 and plus 11 units and finishing below zero">
+        <figcaption>backtest: cumulative profit, 1 unit per bet</figcaption>
+      </figure>
+    </div>
+
+    <h3 class="notes-title">What I <em>found</em></h3>
+    <div class="notes four">
+      <div class="sticky"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-chart"/></svg><p>The bookmaker was best</p><span>Lowest log loss and the closest calibration. My Poisson model beat the baseline and got 37% of the way there.</span></div>
+      <div class="sticky"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-glass"/></svg><p>Form alone didn't help</p><span>The logistic regression on five-match form did slightly worse than the baseline. Long-run strength matters more.</span></div>
+      <div class="sticky"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-ball"/></svg><p>&minus;3.1% from 299 bets</p><span>The value-betting backtest lost 9.2 units. Better than the ~5.5% loss from random betting, but it couldn't beat the margin.</span></div>
+      <div class="sticky"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-key"/></svg><p>A bias towards away teams</p><span>222 of the 299 bets were away wins. The model underrated home teams, so it kept finding false "value" in their opponents.</span></div>
+    </div>
+
+    <div class="two" style="margin-top:80px">
+      <div>
+        <h3 class="sub-h">Problems I <em>solved</em></h3>
+        <ul class="plain">
+          <li><b>Data leakage.</b> I shifted each team's results by one match before taking the five-match rolling average, so a form feature never includes the match it's predicting.</li>
+          <li><b>Date parsing.</b> The source files write dates as day/month/year, so I parsed them with <code>dayfirst=True</code>.</li>
+          <li><b>Teams with no history.</b> Promoted teams had no training seasons for the model to rate, so I excluded those matches.</li>
+        </ul>
+        <h3 class="sub-h">What I'd try <em>next</em></h3>
+        <ul class="plain">
+          <li>Retrain team strengths weekly instead of fixing them from the training seasons.</li>
+          <li>Raise the edge threshold from 5% to around 10%, since the model bet on 87% of matches.</li>
+          <li>Correct the home bias with the Dixon-Coles adjustment or a team-specific home advantage.</li>
+        </ul>
+      </div>
+
+      <div class="ticket stamp" aria-live="polite">
+        <span class="paren">try it</span>
+        <h3>What's the bookmaker's <em>cut</em>?</h3>
+        <p class="how">Type in the decimal odds for any match. This is the first step my model takes: remove the margin to see what the bookmaker really thinks.</p>
+        <div class="odds-in">
+          <label>Home<input id="oH" type="number" min="1.01" step="0.01" value="2.10" inputmode="decimal"></label>
+          <label>Draw<input id="oD" type="number" min="1.01" step="0.01" value="3.40" inputmode="decimal"></label>
+          <label>Away<input id="oA" type="number" min="1.01" step="0.01" value="3.60" inputmode="decimal"></label>
+        </div>
+        <div class="row"><span>Home</span><div class="bar"><i id="bH"></i></div><span class="v" id="vH"></span></div>
+        <div class="row"><span>Draw</span><div class="bar"><i id="bD"></i></div><span class="v" id="vD"></span></div>
+        <div class="row"><span>Away</span><div class="bar"><i id="bA"></i></div><span class="v" id="vA"></span></div>
+        <div class="margin" id="margin"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="station" id="station">
+  <div class="wrap">
+    <span class="paren">Computer graphics, COS3712, Unisa, 2026</span>
+    <h2>Planet Masase <em>space station</em></h2>
+    <div class="two">
+      <div>
+        <p class="lead">An interactive 3D space station orbiting an icy planet, built with Three.js and Vite. The polaroid at the top of this page is the real project running live.</p>
+        <p>Ships fly on inclined orbits, the station rotates and tracks its own orbit, and you can switch lighting and shading models while it runs to compare them. Everything is built from primitive shapes in a scene graph, so each part can move on its own.</p>
+        <figure class="taped" style="margin:28px 0 0">
+          <span class="tape" aria-hidden="true"></span>
+          <video controls preload="metadata" poster="assets/station.jpg" playsinline aria-label="Screen recording of the Planet Masase space station"><source src="assets/station-demo.mp4" type="video/mp4"></video>
+          <figcaption>demo recording, 1 minute</figcaption>
+        </figure>
+        <div class="keys">
+          <span class="k"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>Fly the camera</span>
+          <span class="k"><kbd>1</kbd><kbd>2</kbd></span><span>Up and down</span>
+          <span class="k"><kbd>V</kbd></span><span>Docking view</span>
+          <span class="k"><kbd>L</kbd></span><span>Day or eclipse</span>
+          <span class="k"><kbd>B</kbd></span><span>Cycle shading models</span>
+          <span class="k"><kbd>P</kbd><kbd>O</kbd></span><span>Pause ships or station</span>
+        </div>
+        <p class="ai">I used Claude as an AI coding assistant on this project, and I can walk through how every part works.</p>
+        <div class="links"><a href="https://github.com/Renda-Neluvhalani/Space-Station" target="_blank" rel="noopener">See the code on GitHub</a></div>
+      </div>
+      <div class="facts">
+        <div class="fact"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-planet"/></svg><b>Scene graph</b><span>A central hub and spine, two clusters of six docking modules, four rotating solar wings, end-mounted communication dishes, and five rockets on separate inclined orbits.</span></div>
+        <div class="fact"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-sparkle"/></svg><b>Lighting</b><span>A directional sun with a day and eclipse toggle, pulsing pink and blue docking beacons, a warm hub glow, a docking spotlight and a rotating searchlight.</span></div>
+        <div class="fact"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-glass"/></svg><b>Shading</b><span>Flat on the cargo modules, Gouraud on the structure and Phong on the metal core, rings, dishes and ships, all switchable while it runs.</span></div>
+        <div class="fact"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-chart"/></svg><b>Mapping</b><span>Image textures on the planet, walls, platforms and panels, a generated cube environment map for reflections, and a generated normal map for raised detail on the solar panels.</span></div>
+        <div class="fact"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-rocket"/></svg><b>Built with</b><span>JavaScript, Three.js r185 and Vite, with AI-assisted development (Claude).</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="labasadi" id="labasadi">
+  <div class="wrap">
+    <div class="lcard stamp">
+      <span class="paren">Volunteer web work, Nov 2020 to Dec 2023</span>
+      <h2>A website for <em>La Basadi</em></h2>
+      <p>La Basadi is a community organisation in Richards Bay that promotes volunteering, collective action and gender equality. I designed and built its website as a volunteer, with pages for its mission, projects, photo gallery and contact details.</p>
+      <p>I added a donation call to action, event listings with RSVP links, an email sign-up for project updates and social media links. After launch I kept the site running: improving the layout, answering enquiries from the contact forms, and auditing content so nothing out of date stayed up.</p>
+      <a class="btn fill" href="https://rvhalani1.wixsite.com/mysite" target="_blank" rel="noopener">Visit the site</a>
+      <div class="lstamp stamp" aria-hidden="true"><div class="in"><svg class="doodle" viewBox="0 0 48 48"><use href="#d-web"/></svg></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <h2 class="sec-title center">Education &amp; <em>experience</em></h2>
+    <div class="grid2">
+      <div>
+        <h3>Certificates</h3>
+        <div class="certs">
+          <div class="cert stamp"><div class="in">
+            <div class="code">DP-900</div>
+            <div class="t">Microsoft Certified: Azure Data Fundamentals</div>
+                        <div class="m">Microsoft, 2026</div></div></div>
+          <div class="cert stamp"><div class="in">
+            <div class="code">BA</div>
+            <div class="t">Career Essentials in Business Analysis</div>
+                        <div class="m">Microsoft and LinkedIn, 2026</div></div></div>
+        </div>
+        <p style="font-size:14.5px;margin:0">Also completed: AI Prompt Engineering (Unisa) and Data Visualisation: Best Practices (LinkedIn Learning), both in 2026.</p>
+      </div>
+      <div>
+        <h3>Education</h3>
+        <div class="entry"><div class="t">BSc Computing, Unisa</div><div class="m">2023 to 2026, GPA 68.15</div>
+          <p>Computer Science and Information Systems. Relevant coursework: Databases I and II, Database Design and Implementation, Introduction to Statistics, Data Structures and Algorithms, Techniques of Artificial Intelligence, Human-Computer Interaction, and Advanced System Development. Ten distinctions.</p></div>
+        <div class="entry"><div class="t">National Senior Certificate, Richards Bay High School</div><div class="m">2015 to 2019, average 73%</div>
+          <p>Full colours for academics and prefect (2019), Senior Victrix Ludorum and Best Senior Field Athlete (2018).</p></div>
+      </div>
+      <div>
+        <h3>Experience</h3>
+        <div class="entry"><div class="t">Website administrator and web support, The Labasadi Foundation</div><div class="m">Volunteer, Nov 2020 to Dec 2023</div>
+          <p>Built and maintained the website on a CMS, managed enquiries and feedback from contact forms, ran content audits, and coordinated updates with stakeholders.</p></div>
+        <div class="entry"><div class="t">Administrative and operational support, Wokunaho Social Development and Project Managers</div><div class="m">Volunteer, Jan 2020 to Dec 2024</div>
+          <p>Collected data and analysed it in Excel to compile internal reports, processed and reconciled invoices, and kept financial and administrative records for month-end reporting.</p></div>
+      </div>
+      <div class="skills">
+        <h3>Skills</h3>
+        <p><b>Data:</b> SQL, Python (pandas, NumPy, scikit-learn, statsmodels), Matplotlib, Streamlit, Power BI, Excel, data analysis and visualisation, relational databases, Microsoft Azure.</p>
+        <p><b>Programming:</b> Python, C++, JavaScript, Three.js, Git and GitHub.</p>
+        <p><b>Business:</b> business analysis, requirements gathering, solution analysis, business communication, critical thinking, and Word, PowerPoint and Microsoft 365.</p>
+        <p><b>AI:</b> prompt engineering for large language models.</p>
+        <p style="display:flex;gap:12px;align-items:flex-start;margin-top:18px"><svg class="doodle" viewBox="0 0 48 48" style="width:40px;height:40px;flex:none"><use href="#d-cake"/></svg><span>Outside study I run a small home baking and cake decorating business, and I enjoy data and business research and home interior design.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <svg class="env" viewBox="0 0 120 80" aria-hidden="true" style="stroke:#fff;fill:none;stroke-width:2.5;stroke-linejoin:round"><use href="#d-env"/></svg>
+    <h2>Let's <em>talk</em>.</h2>
+    <p>I'm looking for a graduate role in data or analytics from 2027. I'm based in Centurion, Gauteng.</p>
+    <a class="mail" href="mailto:r.vhalani1@gmail.com">r.vhalani1@gmail.com</a>
+    <div class="links"><a class="btn cv" href="Renda_Neluvhalani_CV.pdf" target="_blank" rel="noopener">Download my CV</a><a href="https://github.com/Renda-Neluvhalani" target="_blank" rel="noopener">GitHub</a><a href="https://www.linkedin.com/in/renda-neluvhalani-167b02154" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div class="foot">Renda Neluvhalani, 2026</div>
+  </div>
+</section>
+
+<script>
+/* ribbon loop */
+(function(){const r=document.getElementById('ribbon');r.innerHTML+=r.innerHTML})();
+/* odds calculator */
+(function(){
+  const ids=['H','D','A'];
+  function calc(){
+    const o=ids.map(k=>parseFloat(document.getElementById('o'+k).value)), m=document.getElementById('margin');
+    if(o.some(v=>!(v>1))){m.textContent='Enter odds above 1.00 for all three outcomes.';return}
+    const imp=o.map(v=>1/v), sum=imp.reduce((a,b)=>a+b,0);
+    ids.forEach((k,i)=>{const p=imp[i]/sum;document.getElementById('b'+k).style.width=(p*100).toFixed(1)+'%';
+      document.getElementById('v'+k).textContent=(p*100).toFixed(1)+'%, odds '+(1/p).toFixed(2)});
+    const g=(sum-1)*100;
+    m.innerHTML=g>=0?'The bookmaker\'s margin is <b>'+g.toFixed(1)+'%</b>. The bars show each outcome\'s chance with it removed, and the fair odds.'
+      :'These odds add up to less than 100%, so there\'s no margin. That happens when the best prices from different bookmakers are combined.';
+  }
+  ids.forEach(k=>document.getElementById('o'+k).addEventListener('input',calc)); calc();
+})();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="station.js"></script>
+</body>
+</html>
